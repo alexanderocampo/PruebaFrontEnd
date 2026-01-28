@@ -1,0 +1,83 @@
+<div class="search-container">
+      <h2>🔍 Búsqueda Reactiva de Clientes</h2>
+      
+      <!-- Input -->
+      <div class="search-box">
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchChange($event)"
+          placeholder="Escribe al menos 3 caracteres..."
+          class="search-input"
+          [class.input-error]="showMinLengthWarning"
+        />
+        <span class="search-icon">🔍</span>
+        
+        <!-- Loading -->
+        <div *ngIf="isLoading" class="loading-indicator">
+          <div class="spinner"></div>
+          <span>Buscando...</span>
+        </div>
+      </div>
+
+      <!-- Mensajes informativos -->
+      <div class="messages">
+        <!-- Warning: menos de 3 caracteres -->
+        <div *ngIf="searchTerm.length > 0 && searchTerm.length < 3" 
+             class="message warning">
+          ⚠️ Escribe al menos 3 caracteres para buscar
+        </div>
+        
+        <!-- Loading -->
+        <div *ngIf="isLoading && searchTerm.length >= 3" 
+             class="message loading">
+          🔄 Buscando clientes...
+        </div>
+        
+        <!-- Error -->
+        <div *ngIf="error" class="message error">
+          ❌ {{ error }}
+        </div>
+        
+        <!-- Sin resultados -->
+        <div *ngIf="!isLoading && searchTerm.length >= 3 && customers.length === 0" 
+             class="message no-results">
+          📭 No se encontraron clientes para "{{ searchTerm }}"
+        </div>
+        
+        <!-- Estadísticas -->
+        <div *ngIf="customers.length > 0" class="message info">
+          ✅ Encontrados {{ customers.length }} cliente(s)
+        </div>
+      </div>
+
+      <!-- Lista de resultados -->
+      <div *ngIf="customers.length > 0" class="results-container">
+        <h3>📋 Resultados de búsqueda:</h3>
+        <ul class="customer-list">
+          <li *ngFor="let customer of customers; trackBy: trackById" 
+              class="customer-item">
+            <div class="customer-avatar">
+              {{ customer.name.charAt(0) }}
+            </div>
+            <div class="customer-info">
+              <strong class="customer-name">{{ customer.name }}</strong>
+              <span class="customer-email">📧 {{ customer.email }}</span>
+              <span class="customer-id">🆔 ID: {{ customer.id }}</span>
+            </div>
+            <button class="select-btn" (click)="selectCustomer(customer)">
+              Seleccionar
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Debug info -->
+      <div class="debug-info" *ngIf="showDebug">
+        <h4>Información de Debug:</h4>
+        <p>Término buscado: "{{ searchTerm }}"</p>
+        <p>Caracteres: {{ searchTerm.length }}</p>
+        <p>Última búsqueda: {{ lastSearchTime | date:'medium' }}</p>
+        <p>Total búsquedas: {{ searchCount }}</p>
+      </div>
+    </div>

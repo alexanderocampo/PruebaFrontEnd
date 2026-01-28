@@ -1,0 +1,74 @@
+<div class="cart-demo">
+  <h2>🛒 Carrito de Compras</h2>
+  
+  <div class="container">
+    <!-- Productos disponibles -->
+    <div class="products-section">
+      <h3>Productos</h3>
+      <div class="products-grid">
+        <div *ngFor="let product of availableProducts" class="product-card">
+          <h4>{{ product.name }}</h4>
+          <p>Precio: ${{ product.price.toFixed(2) }}</p>
+          <button (click)="addToCart(product)" class="add-btn">
+            Agregar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carrito de compras -->
+    <div class="cart-section">
+      <h3>Tu Carrito</h3>
+      
+      <div class="cart-summary">
+        <div class="summary-item">
+          <span>Items:</span>
+          <strong>{{ cartService.totalCount() }}</strong>
+        </div>
+        <div class="summary-item">
+          <span>Total:</span>
+          <strong>${{ cartService.totalPrice().toFixed(2) }}</strong>
+        </div>
+        <button 
+          (click)="cartService.clearCart()" 
+          [disabled]="cartService.totalCount() === 0"
+          class="clear-btn"
+        >
+          Vaciar
+        </button>
+      </div>
+
+      <!-- Items del carrito -->
+      <div *ngIf="cartService.totalCount() === 0" class="empty-cart">
+        No hay items en el carrito
+      </div>
+
+      <div *ngIf="cartService.totalCount() > 0" class="cart-items">
+        <div *ngFor="let item of cartService.items()" class="cart-item">
+          <div class="item-info">
+            <h4>{{ item.product.name }}</h4>
+            <p>${{ item.product.price.toFixed(2) }}</p>
+          </div>
+          
+          <div class="item-controls">
+            <button (click)="decreaseQuantity(item.product.id)" class="qty-btn">
+              -
+            </button>
+            <span class="quantity">{{ item.quantity }}</span>
+            <button (click)="increaseQuantity(item.product.id)" class="qty-btn">
+              +
+            </button>
+          </div>
+          
+          <div class="item-total">
+            ${{ (item.product.price * item.quantity).toFixed(2) }}
+          </div>
+          
+          <button (click)="removeFromCart(item.product.id)" class="remove-btn">
+            🗑️
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
